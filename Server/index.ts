@@ -1,15 +1,9 @@
 import {Server} from 'socket.io';
 
-interface IRoom{
-    name: string;
-    users: number;
+interface IVideo{
+    link: string;
+    startedAt: string;
 }
-
-const roomList: IRoom[] = [];
-roomList.push({
-    name: 'dupa',
-    users: 2
-});
 
 const io = new Server(3001,{
     cors:{
@@ -17,9 +11,16 @@ const io = new Server(3001,{
     }
 });
 
+let videoArr: IVideo[] = [];
+//Current video share
 io.on('connection', (socket) =>{
-    console.log(socket.id);
-    socket.on('share-rooms',() =>{
-        io.emit('recive-rooms', roomList);
-    });
+    io.emit('current-videos', videoArr);
+
+    socket.on('add-video',(link: string) => {
+        videoArr.push({
+            link: link,
+            startedAt: `${Date.now()}`
+        });
+        io.emit('current-videos', videoArr); 
+    })
 });

@@ -1,34 +1,45 @@
 import { io } from 'socket.io-client';
 
 import React, {FC, useEffect, useState} from 'react';
-import './App.scss';
-import MiniRoom from './MiniRoom/MiniRoom';
- 
-const socket = io('http://localhost:3001');
 
-interface IRoom{
-    name: string;
-    users: number;
+import VideoPlayer from './VideoPlayer/VideoPlayer';
+import './App.scss';
+import Queue from './Queue/Queue';
+ 
+export interface IVideo{
+    link: string;
+    startedAt: string;
 }
 
-socket.emit('share-rooms');
+const socket = io('http://localhost:3001');
+
+socket.on('hello',(message: string) => {
+    console.log(message);
+})
 
 const App:FC = () => {
-    const [rooms, setRooms] = useState<IRoom[]>([])
+    const [videos, setVideos] = useState<IVideo[]>([])
 
     useEffect(() => {
-        socket.on('recive-rooms', (roomList: any[]) =>{
-            // console.log('xD')
-            console.log(roomList);
-            setRooms(roomList);
+        socket.on('current-videos', (currentVideo: IVideo[]) =>{
+            if(currentVideo)
+                setVideos(currentVideo);
+            else
+                setVideos([]);
         });
-    }, [rooms]);
+    }, [videos]);
+
+    const addVideoHandler = (link: string) => {
+        socket.emit('add-video', (link));
+    }
 
     return (
         <div className="main">
-            ${rooms.map( (el) => (//change key
-                <MiniRoom key={el.name} name={el.name} users={el.users}></MiniRoom>
-            ))}
+            <VideoPlayer currentVideo={videos[0]?.link}/>
+            <Queue 
+                addVideoHandler={addVideoHandler}
+                videosQueue={videos}
+            />
         </div>
     );
 }
