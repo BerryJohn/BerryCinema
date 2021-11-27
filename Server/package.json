@@ -1,0 +1,10 @@
+{
+  "name": "berrycinemaserver",
+  "version": "1.0.0",
+  "description": "Server for BerryCinema",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^4.4.0"
+  }
+}
