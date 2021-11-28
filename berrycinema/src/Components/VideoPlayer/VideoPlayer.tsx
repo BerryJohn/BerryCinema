@@ -16,7 +16,7 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
     const bigPlayer = useRef<ReactPlayer>(null);
 
     const videoPlayingHandler = () => setVideoPlaying(!videoPlaying);
-    const onPlayHandler = () => {
+    const onPlayHandler = () => {  // repair
         socket.emit('play-video');
         socket.on('current-video-data', (video: IVideo) => {
             const newTime: number = video?.currentTime || 0; 
