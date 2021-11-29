@@ -12,7 +12,7 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
     const socket = props.socket;
 
     const [currentVideo, setVideo] = useState('');
-    const [videoPlaying, setVideoPlaying] = useState<boolean>(false);
+    const [videoPlaying, setVideoPlaying] = useState<boolean>(true);
     const bigPlayer = useRef<ReactPlayer>(null);
 
     const videoPlayingHandler = () => setVideoPlaying(!videoPlaying);
@@ -21,18 +21,23 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
         socket.on('current-video-data', (video: IVideo) => {
             const newTime: number = video?.currentTime || 0; 
             bigPlayer.current?.seekTo(newTime);
-            videoPlayingHandler();
+            if(videoPlaying == false)
+                videoPlayingHandler();
         });
     };
     return (
         <>
             <ReactPlayer
                 controls={true}
-                // playing={videoPlaying}
+                playing={videoPlaying}
                 ref={bigPlayer}
                 url={props.currentVideo?.link}
-                onPlay={() => onPlayHandler()}
+                onReady={() => onPlayHandler()}
+                // onBufferEnd={() => videoPlayingHandler()}
             />
+            <button onClick={() => onPlayHandler()}>seek to</button>
+            <button onClick={() => videoPlayingHandler()}>{`${videoPlaying}`}</button>
+
         </>
     );
 }
