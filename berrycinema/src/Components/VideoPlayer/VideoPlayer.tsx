@@ -1,18 +1,23 @@
 import React, {FC, useRef, useState} from 'react';
 import ReactPlayer from 'react-player';
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+
 import { Socket } from 'socket.io-client';
 import { IVideo } from '../App';
 import './videoPlayer.scss';
 
-import { BiPlay, BiPause, BiVolumeLow } from "react-icons/bi";
+import { BiPlay, BiPause, BiVolumeLow, BiVolumeFull, BiVolumeMute, BiVolume, BiFullscreen } from "react-icons/bi";
 
 interface VideoPlayerProps {
     currentVideo: IVideo;
     socket: Socket;
 }
+let timer: NodeJS.Timeout;
  
 const VideoPlayer: FC<VideoPlayerProps> = (props) => {
     const socket = props.socket;
+
+    const handle = useFullScreenHandle();
 
     const [isSmallBar, setIsSmallBar] = useState<boolean>(true);
     const [currentPlayedSeconds, setCurrentPlayedSeconds] = useState<number>(0);
@@ -50,7 +55,14 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
         setCurrentLoaded(e.loaded)
         setCurrentPlayedSeconds(e.playedSeconds)
     };
-    const onMouseMoveHandler = () => setIsSmallBar(false);
+
+    const onMouseMoveHandler = () => {
+        if(timer != null)
+            clearTimeout(timer);
+
+        timer = setTimeout(onMouseMoveLeave,2000);
+        setIsSmallBar(false);
+    };
     const onMouseMoveLeave = () => setIsSmallBar(true);
 
     const inputVolumeHandler = (volume: number) => {
@@ -59,54 +71,61 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
 
     return (
         <div className='videoContainer'>
-            <ReactPlayer
-                className='reactVideo'
-                width='100%'
-                height='100vh'
-                volume={videoVolume}
-                controls={false}
-                playing={videoPlaying}
-                ref={bigPlayer}
-                url={props.currentVideo?.link}
-                onProgress={(e) => {onProgressHandler(e)}}
-            />
-            <div className='playerControls' 
-                onMouseUp={(e) => playerControlsHandler(e)} 
-                onMouseOver={() => {onMouseMoveHandler()}}
-                onMouseLeave={() => {onMouseMoveLeave()}}
-                ref={playerControlsRef}
-            >
+            <FullScreen handle={handle}>
+                <ReactPlayer
+                    className='reactVideo'
+                    width='100%'
+                    height='100vh'
+                    volume={videoVolume}
+                    controls={false}
+                    playing={videoPlaying}
+                    ref={bigPlayer}
+                    url={props.currentVideo?.link}
+                    onProgress={(e) => {onProgressHandler(e)}}
+                />
+                <div className='playerControls' 
+                    onMouseUp={(e) => playerControlsHandler(e)} 
+                    onMouseMove={() => {onMouseMoveHandler()}}
+                    onMouseLeave={() => {onMouseMoveLeave()}}
+                    ref={playerControlsRef}
+                >
 
-                <div className={isSmallBar ? 'smallTimeBar' : 'smallTimeBar smallBarHidden'} ref={smallTimeBarRef}>
-                    <div className='loadedTimeBar' style={{width:`${(smallTimeBarRef.current?.offsetWidth || 0) * currentLoaded}px`}}>
-                        <div className="currentTimeBar" style={{width:`${(smallTimeBarRef.current?.offsetWidth || 0) * currentPlayed}px`}} />
+                    <div className={isSmallBar ? 'smallTimeBar' : 'smallTimeBar smallBarHidden'} ref={smallTimeBarRef}>
+                        <div className='loadedTimeBar' style={{width:`${(smallTimeBarRef.current?.offsetWidth || 0) * currentLoaded}px`}}>
+                            <div className="currentTimeBar" style={{width:`${(smallTimeBarRef.current?.offsetWidth || 0) * currentPlayed}px`}} />
+                        </div>
                     </div>
-                </div>
-                
-                <div className={!isSmallBar ? 'controlPanel' : 'controlPanel controlPanelHidden'}>
-                    <div className='statusButton' onClick={statusButtonHandler}>
-                        {videoPlaying ? (<BiPause className='statusPlay'/>) : <BiPlay className='statusPlay'/>}
-                    </div>
-                    <div className="currentTimer">{new Date(currentPlayedSeconds * 1000).toISOString().substr(11, 8)}</div>
-                    <div className='bigTimeBar' ref={bigTimeBarRef}>
-                        <div className='loadedTimeBar' style={{width:`${(bigTimeBarRef.current?.offsetWidth || 0) * currentLoaded}px`}}>
-                            <div className="currentTimeBar" style={{width:`${(bigTimeBarRef.current?.offsetWidth || 0) * currentPlayed}px`}}>
-                                <div className="marker"/>
+                    
+                    <div className={!isSmallBar ? 'controlPanel' : 'controlPanel controlPanelHidden'}>
+                        <div className='statusButton' onClick={statusButtonHandler}>
+                            {videoPlaying ? (<BiPause className='statusPlay'/>) : <BiPlay className='statusPlay'/>}
+                        </div>
+                        <div className="currentTimer">{new Date(currentPlayedSeconds * 1000).toISOString().substr(11, 8)}</div>
+                        <div className='bigTimeBar' ref={bigTimeBarRef}>
+                            <div className='loadedTimeBar' style={{width:`${(bigTimeBarRef.current?.offsetWidth || 0) * currentLoaded}px`}}>
+                                <div className="currentTimeBar" style={{width:`${(bigTimeBarRef.current?.offsetWidth || 0) * currentPlayed}px`}}>
+                                    <div className="marker"/>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="currentTimer">{new Date((bigPlayer.current?.getDuration() || 0) * 1000).toISOString().substr(11, 8)}</div>
-                    <div className="volumeSlider">
-                        <div className="volume">
-                            <BiVolumeLow className='volumeIcon' />
+                        <div className="currentTimer">{new Date((bigPlayer.current?.getDuration() || 0) * 1000).toISOString().substr(11, 8)}</div>
+                        <div className="volumeSlider">
+                            <div className="volume">
+                                { videoVolume === 0 ? <BiVolumeMute className='volumeIcon'/> : 
+                                videoVolume > 0.75 ? <BiVolumeFull className='volumeIcon'/> : 
+                                videoVolume > 0.50 ? <BiVolumeLow className='volumeIcon'/> : 
+                                <BiVolume className='volumeIcon' />  }
+                            </div>
+                            <div className="slider">
+                                <input type='range' max='100' min='0' onChange={(e) => inputVolumeHandler((parseInt(e.target.value)))}/>
+                            </div>
                         </div>
-                        <div className="slider">
-                            <input type='range' max='100' min='0' onChange={(e) => inputVolumeHandler((parseInt(e.target.value)))}/>
+                        <div className="fullscreen" onClick={!handle.active ? handle.enter : handle.exit}>
+                            <BiFullscreen className='fullscreenIcon'/>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </FullScreen>
         </div>
     );
 }

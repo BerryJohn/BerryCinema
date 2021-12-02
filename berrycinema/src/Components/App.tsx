@@ -9,6 +9,8 @@ import Queue from './Queue/Queue';
 export interface IVideo{
     link: string;
     duration: number;
+    thumbnail: string;
+    title: string;
     startedAt?: string;
     currentTime?: number;
 }
@@ -27,12 +29,14 @@ const App:FC = () => {
         });
     }, [videos]);
 
-    const addVideoHandler = (link: string, duration: number) => {
-        if(duration != -1)
+    const addVideoHandler = (link: string, duration: number, thumbnail: string, title: string) => {
+        if(duration !== -1)
         {
             const newVideo: IVideo = {
                 link: link,
-                duration: duration
+                duration: duration,
+                thumbnail: thumbnail,
+                title: title,
             }; 
             socket.emit('add-video', newVideo);
         }

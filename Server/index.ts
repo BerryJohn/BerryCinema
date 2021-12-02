@@ -5,6 +5,8 @@ interface IVideo{
     startedAt: string;
     duration: number;
     currentTime: number;
+    thumbnail: string;
+    title: string;
 }
 
 const io = new Server(3001,{
@@ -27,7 +29,9 @@ io.on('connection', (socket) =>{
                 link: newVideo.link,
                 startedAt: `${Date.now()}`,
                 duration: newVideo.duration,
-                currentTime: 0
+                currentTime: 0,
+                thumbnail: newVideo.thumbnail,
+                title: newVideo.title,
             });
             
             io.emit('current-videos', videoArr);
