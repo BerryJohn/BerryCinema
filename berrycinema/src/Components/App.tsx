@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import React, {FC, useEffect, useState} from 'react';
 
 import VideoPlayer from './VideoPlayer/VideoPlayer';
-import './App.scss';
+import './app.scss';
 import Queue from './Queue/Queue';
  
 export interface IVideo{

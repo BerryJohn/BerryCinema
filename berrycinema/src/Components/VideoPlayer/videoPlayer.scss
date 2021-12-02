@@ -1,0 +1,83 @@
+$base-color:rgba(175, 17, 109, 0.767);
+
+.videoContainer{
+    min-height:100vh;
+    background-color: black;
+    // border:1px solid red;
+}
+
+.reactVideo{
+    position: relative;
+}
+
+.playerControls{
+    width:100%;
+    height:100vh;
+    position: absolute;
+    top:0;
+    cursor: pointer;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.smallTimeBar{
+    height:3px;
+    width:100%;
+    background: rgba(212, 212, 212, 0.274);
+    position: absolute;
+    bottom:0;
+    transition: .2s;
+
+    .loadedTimeBar{
+        height:3px;
+        background: rgba(212, 212, 212, 0.616);
+        width:0px;
+        border-radius:2px;
+        transition: .1s;
+    }
+    .currentTimeBar{
+        height:3px;
+        background: $base-color;
+        border-radius:2px;
+        transition: 1s;
+    }
+}
+
+.smallBarHidden{
+    bottom:-3px;
+}
+
+.controlPanel{
+    position: absolute;
+    bottom:20px;
+    width:100%;
+    height:30px;
+    // background-color: rgba(0, 128, 0, 0.397);
+    transition: .4s;
+    display:flex;
+    justify-content: center;
+    .bigTimeBar{
+        width:100%;
+        height:3px;
+        background: rgba(212, 212, 212, 0.274);
+        .loadedTimeBar{
+            height:3px;
+            background: rgba(212, 212, 212, 0.616);
+            width:0px;
+            border-radius:2px;
+            transition: .1s;
+        }
+        .currentTimeBar{
+            height:3px;
+            background: $base-color;
+            border-radius:2px;
+            transition: 1s;
+        }
+    }
+}
+
+.controlPanelHidden{
+    bottom:-40px;
+}
+
