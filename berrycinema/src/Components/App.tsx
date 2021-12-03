@@ -11,6 +11,7 @@ export interface IVideo{
     duration: number;
     thumbnail: string;
     title: string;
+    description: string;
     startedAt?: string;
     currentTime?: number;
 }
@@ -29,7 +30,7 @@ const App:FC = () => {
         });
     }, [videos]);
 
-    const addVideoHandler = (link: string, duration: number, thumbnail: string, title: string) => {
+    const addVideoHandler = (link: string, duration: number, thumbnail: string, title: string, description: string) => {
         if(duration !== -1)
         {
             const newVideo: IVideo = {
@@ -37,7 +38,8 @@ const App:FC = () => {
                 duration: duration,
                 thumbnail: thumbnail,
                 title: title,
-            }; 
+                description: description
+            };
             socket.emit('add-video', newVideo);
         }
     }

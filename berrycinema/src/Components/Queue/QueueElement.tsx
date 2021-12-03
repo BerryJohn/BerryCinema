@@ -1,5 +1,4 @@
-import React,{FC, useRef, useState} from 'react';
-import ReactPlayer from 'react-player';
+import React,{FC } from 'react';
 
 import './queue.scss';
 
@@ -9,6 +8,7 @@ interface IQueueElementProps {
     duration: number;
     link: string;
     thumbnail: string;
+    description: string;
 }
  
 const QueueElement: FC<IQueueElementProps> = (props) => {
@@ -20,6 +20,7 @@ const QueueElement: FC<IQueueElementProps> = (props) => {
             </div>
             <div className="elementInfo">
                 <div className="title">{props.title}</div>
+                <div className="description">{props.description}</div>
                 <div className="duration">{new Date(props.duration * 1000).toISOString().substr(11, 8)}</div>
             </div>
 

@@ -21,6 +21,41 @@ $base-gray: rgba(212, 212, 212, 0.616);
     flex-direction: column;
     align-items: center;
     overflow: hidden;
+    transition:.2s;
+    .title{
+        color:white;
+        font-size:34px;
+        position: absolute;
+        left:20px;
+        top:20px;
+        transition:.4s;
+        opacity:1;
+    }
+    .titleHidden{
+        top:0px;
+        opacity: 0;
+    }
+    .videoStatus{
+        position:relative;
+        width:60px;
+        height:60px;
+        background: rgba(212, 212, 212, 0.616);
+        color:white;
+        transition: .3s;
+        border-radius:30px;
+        top:calc(50% - 30px);
+        .statusIcon{
+            font-size:60px;
+        }
+    }
+    .videoStatusHidden{
+        opacity:0;
+        transition-delay: .3s;
+    }
+}
+
+.playerControlsPaused{
+    background-color: rgba(0, 0, 0, .3);
 }
 
 .smallTimeBar{
@@ -29,8 +64,8 @@ $base-gray: rgba(212, 212, 212, 0.616);
     background: rgba(212, 212, 212, 0.274);
     position: absolute;
     bottom:0;
-    transition: .2s;
-
+    transition: .4s;
+    opacity:1;
     .loadedTimeBar{
         height:3px;
         background: rgba(212, 212, 212, 0.616);
@@ -48,6 +83,7 @@ $base-gray: rgba(212, 212, 212, 0.616);
 
 .smallBarHidden{
     bottom:-3px;
+    opacity:0;
 }
 
 .controlPanel{
@@ -64,6 +100,7 @@ $base-gray: rgba(212, 212, 212, 0.616);
     box-sizing: border-box;
     color:rgb(255, 255, 255);
     padding:0px 10px;
+    opacity: 1;
     .bigTimeBar{
         cursor:default;
         width:100%;
@@ -96,7 +133,6 @@ $base-gray: rgba(212, 212, 212, 0.616);
         }
     }
     .statusButton{
-        // border:1px solid red;
         min-width:40px;
         height: 40px;
         transition: .4s;
@@ -117,10 +153,8 @@ $base-gray: rgba(212, 212, 212, 0.616);
         line-height: 40px;
         padding:0px 10px;
         cursor:default;
-        // border:1px solid red;
     }
     .volumeSlider{
-        // border:1px solid red;
         height:40px;
         min-width:40px;
         display:flex;
@@ -181,6 +215,6 @@ $base-gray: rgba(212, 212, 212, 0.616);
 }
 
 .controlPanelHidden{
-    bottom:-40px;
+    bottom:-20px;
+    opacity: 0;
 }
-

@@ -30,7 +30,6 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
     const smallTimeBarRef = useRef<HTMLDivElement>(null);
     const bigTimeBarRef = useRef<HTMLDivElement>(null);
     const playerControlsRef = useRef<HTMLDivElement>(null);
-    const statusButtonRef = useRef<HTMLDivElement>(null);
 
     const videoPlayingHandler = () => {
             setVideoPlaying(!videoPlaying)
@@ -83,20 +82,23 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
                     url={props.currentVideo?.link}
                     onProgress={(e) => {onProgressHandler(e)}}
                 />
-                <div className='playerControls' 
+                <div className={videoPlaying ? 'playerControls' : 'playerControls playerControlsPaused'} 
                     onMouseUp={(e) => playerControlsHandler(e)} 
                     onMouseMove={() => {onMouseMoveHandler()}}
                     onMouseLeave={() => {onMouseMoveLeave()}}
                     ref={playerControlsRef}
                 >
 
-                    <div className={isSmallBar ? 'smallTimeBar' : 'smallTimeBar smallBarHidden'} ref={smallTimeBarRef}>
+                    <div className={isSmallBar && videoPlaying ? 'smallTimeBar' : 'smallTimeBar smallBarHidden'} ref={smallTimeBarRef}>
                         <div className='loadedTimeBar' style={{width:`${(smallTimeBarRef.current?.offsetWidth || 0) * currentLoaded}px`}}>
                             <div className="currentTimeBar" style={{width:`${(smallTimeBarRef.current?.offsetWidth || 0) * currentPlayed}px`}} />
                         </div>
                     </div>
-                    
-                    <div className={!isSmallBar ? 'controlPanel' : 'controlPanel controlPanelHidden'}>
+                    <div className={!videoPlaying ? 'videoStatus' : 'videoStatus videoStatusHidden'} onClick={statusButtonHandler}>
+                        {!videoPlaying ? (<BiPlay className='statusIcon'/>) : (<BiPause className='statusIcon'/>)}
+                    </div>
+                    <div className={!isSmallBar || !videoPlaying ? 'title' : 'title titleHidden'}>{props.currentVideo.title}</div>
+                    <div className={!isSmallBar || !videoPlaying ? 'controlPanel' : 'controlPanel controlPanelHidden'}>
                         <div className='statusButton' onClick={statusButtonHandler}>
                             {videoPlaying ? (<BiPause className='statusPlay'/>) : <BiPlay className='statusPlay'/>}
                         </div>
