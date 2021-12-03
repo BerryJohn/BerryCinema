@@ -97,7 +97,7 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
                     <div className={!videoPlaying ? 'videoStatus' : 'videoStatus videoStatusHidden'} onClick={statusButtonHandler}>
                         {!videoPlaying ? (<BiPlay className='statusIcon'/>) : (<BiPause className='statusIcon'/>)}
                     </div>
-                    <div className={!isSmallBar || !videoPlaying ? 'title' : 'title titleHidden'}>{props.currentVideo.title}</div>
+                    <div className={!isSmallBar || !videoPlaying ? 'title' : 'title titleHidden'}>{props.currentVideo?.title}</div>
                     <div className={!isSmallBar || !videoPlaying ? 'controlPanel' : 'controlPanel controlPanelHidden'}>
                         <div className='statusButton' onClick={statusButtonHandler}>
                             {videoPlaying ? (<BiPause className='statusPlay'/>) : <BiPlay className='statusPlay'/>}

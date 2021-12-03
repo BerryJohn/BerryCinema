@@ -16,7 +16,7 @@ export interface IVideo{
     currentTime?: number;
 }
 
-const socket = io('http://localhost:3001');
+const socket = io('http://192.168.2.217:3001');
 
 const App:FC = () => {
     const [videos, setVideos] = useState<IVideo[]>([])
@@ -42,8 +42,8 @@ const App:FC = () => {
             };
             socket.emit('add-video', newVideo);
         }
-    }
-
+    };
+    
     return (
         <div className="main">
             <VideoPlayer 

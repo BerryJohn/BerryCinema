@@ -1,4 +1,4 @@
-import {Server} from 'socket.io';
+import {Server, Socket} from 'socket.io';
 
 interface IVideo{
     link: string;
@@ -7,23 +7,24 @@ interface IVideo{
     currentTime: number;
     thumbnail: string;
     title: string;
+    description: string;
 }
 
 const io = new Server(3001,{
     cors:{
-        origin: ['http://localhost:3000']
+        origin: ['http://localhost:3000','http://192.168.2.217:3000'],
     }
 });
 
 let videoArr: IVideo[] = [];
 
-const getCurrentVideo = () => videoArr.length > 0 ? videoArr[0] : null ;
+const getCurrentVideo = () => videoArr.length > 0 ? videoArr[0] : null;
 //Current video share
 io.on('connection', (socket) =>{
     io.emit('current-videos', videoArr);
 
     socket.on('add-video',(newVideo: IVideo) => {
-        if(newVideo.duration != -1 )
+        if(newVideo.duration != -1 || newVideo.duration !== null)
         {
             videoArr.push({
                 link: newVideo.link,
@@ -32,18 +33,18 @@ io.on('connection', (socket) =>{
                 currentTime: 0,
                 thumbnail: newVideo.thumbnail,
                 title: newVideo.title,
+                description: newVideo.description
             });
-            
             io.emit('current-videos', videoArr);
             if(videoArr.length <= 1)
                 startVideoInterval();
         }
     });
-
     socket.on('play-video', () => {
         socket.emit('current-video-data', getCurrentVideo());
     });
 });
+
 let videoInterval: NodeJS.Timeout;
 
 const startVideoInterval = () => {
@@ -58,7 +59,13 @@ const videoPlayerInterval = (video: IVideo) => {
     {
         stopVideoInterval();
         videoArr.shift();
+        io.emit('current-videos', videoArr);
+        if(videoArr.length > 0)
+            {
+                startVideoInterval();
+                io.emit('current-video-data', getCurrentVideo());                    
+            }
+        return;
     }
     video.currentTime += 1;
-    console.log(video.currentTime);
 };
