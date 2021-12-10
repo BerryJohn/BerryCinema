@@ -15,8 +15,9 @@ interface QueueProps {
  
 const Queue: FC<QueueProps> = (props) => {
     
-
     const [addVideoOpen, setAddVideoOpen] = useState<boolean>(false);
+    const [controlVideoOpen, setControlVideoOpen] = useState<boolean>(false);
+
     const [linkValue, setLinkValue] = useState<string>('');
     const [titleValue, setTitleValue] = useState<string>('');
     const [descriptionValue, setDescriptionValue] = useState<string>('');
@@ -46,8 +47,17 @@ const Queue: FC<QueueProps> = (props) => {
         }
     }
 
-    const openVideoHandler = () => setAddVideoOpen(!addVideoOpen);
-
+    const openVideoHandler = () => {
+        setAddVideoOpen(!addVideoOpen);
+        if(controlVideoOpen)
+            setControlVideoOpen(false)
+    };
+    const openControlVideoHandler = () => {
+        setControlVideoOpen(!controlVideoOpen)
+        if(addVideoOpen)
+            setAddVideoOpen(false)
+    };
+    
     const addVideoButtonHandler = () => {
         addVideoHandler();
         setLinkValue('');
@@ -58,8 +68,19 @@ const Queue: FC<QueueProps> = (props) => {
 
     return ( 
         <div className='queueWrapper'>
+            <div className={controlVideoOpen ? 'controlVideo controlVideoActive' : 'controlVideo'}>
+                    <input type='range' />
+                    <div className='buttons'>
+                        <div className='controlButton'>
+                            play/stop
+                        </div>
+                        <div className='controlButton'>
+                            skip
+                        </div>
+                    </div>
+            </div>
             <div className={addVideoOpen ? 'addVideoForm addVideoFormActive' : 'addVideoForm'}>
-                <div className="addControls">
+                <div className='addControls'>
                     <div>
                         <p>Link:</p>
                         <input type="text" value={linkValue} onChange={e => {setLinkValue(e.target.value)}} required={true} ref={linkInput}/>                        
@@ -78,8 +99,13 @@ const Queue: FC<QueueProps> = (props) => {
             </div>
             <div className='queueStats'>
                 <h1>Playlista</h1>
-                <div className='addVideo' onClick={() => openVideoHandler()}>
-                    Add Video <BiAddToQueue className='addIcon'/>
+                <div className='buttons'>
+                    <div className='controlVideoButton' onClick={() => openControlVideoHandler()}>
+                        Controls
+                    </div>
+                    <div className='addVideo' onClick={() => openVideoHandler()}>
+                        Add Video <BiAddToQueue className='addIcon'/>
+                    </div>
                 </div>
             </div>
             <div className="line" />
