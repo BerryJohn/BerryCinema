@@ -1,0 +1,168 @@
+$base-color:rgba(175, 17, 109, 0.767);
+$base-gray: rgba(212, 212, 212, 0.616);
+$base-gray-lighter: rgba(212, 212, 212, 0.76);
+
+@mixin flex-center-column {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+@mixin basic-button {
+    @include flex-center-column();
+    min-width:40px;
+    height:40px;
+    font-size:30px;
+    border-radius: 4px;
+    transition: .2s;
+    margin-right:5px;
+    &:hover{
+        background-color: $base-gray;
+    }
+}
+
+.controlsWrapper{
+    width:100%;
+    height:100vh;
+    position: absolute;
+    top:0;
+    cursor: pointer;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    transition:.3s;
+}
+
+.controlsPaused{
+    background-color: rgba(0, 0, 0, 0.212);
+}
+
+.smallTimeBar{
+    width:100%;
+    height:2px;
+    position:absolute;
+    bottom:0px;
+    .loadedTimeBar{
+        height:3px;
+        background: rgba(212, 212, 212, 0.616);
+        width:0px;
+        border-radius:2px;
+        transition: .1s;
+        .currentTimeBar{
+            height:3px;
+            background: $base-color;
+            border-radius:2px;
+            transition: 1s;
+        }
+    }
+}
+
+.hiddenSmallBar{
+    bottom:-10px;
+}
+
+.bigBar{
+    cursor: default;
+    position: absolute;
+    bottom:20px;
+    min-width: 100%;
+    max-width:100%;
+    height:40px;
+    transition: .4s;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    color:rgb(255, 255, 255);
+    padding:0px 10px;
+    opacity: 1;
+    // background-color: rgba(255, 255, 255, 0.329);
+
+    .timers{
+        @include flex-center-column();
+        height:40px;
+        cursor: default;
+        margin-right:5px;
+    }
+
+    .fullscreen, .volume, .videoStatus{
+        @include basic-button();
+    }
+    .volume{
+        &:hover > .volumeSlider{
+            opacity:1;
+            transform: rotate(-90deg) translateX(70px);
+        }
+    }
+    .volumeSlider{
+        @include flex-center-column();
+        height:30px;
+        width:100px;
+        background-color: $base-gray;
+        position:absolute;
+        transform: rotate(-90deg) translateX(-70px);
+        opacity:0;
+        transition:.3s;
+        input[type=range]{
+            height:100px;
+        }
+    }
+    .bigTimeBar{
+        height:5px;
+        background-color: rgba(102, 102, 102, 0.479);
+        width:100%;
+        margin-right:5px;
+        border-radius:2px;
+        .loadedTimeBar{
+            height:5px;
+            background-color: $base-gray;
+            .currentTimeBar{
+                height:5px;
+                background-color: $base-color;
+            }
+        }
+    }
+}
+
+.videoTitle{
+    color:white;
+    font-size:24px;
+    position: absolute;
+    left:20px;
+    top:20px;
+    transition:.4s;
+    opacity:1;
+}
+
+.videoTitleHidden{
+    top:0px;
+    opacity: 0;
+}
+
+.hiddenBigBar{
+    bottom:-30px;
+    opacity:0;
+}
+
+.midVideoStatus{
+    @include flex-center-column();
+    background-color: $base-gray;
+    height:70px;
+    width:70px;
+    border-radius:15px;
+    position:absolute;
+    top: calc(50% - 35px);
+    color:white;
+    font-size:40px;
+    transition: .2s;
+    &:hover{
+        background-color: $base-gray-lighter;
+    }
+}
+
+.midVideoStatusHidden{
+    opacity:0;
+    transition-delay: .3s;
+}

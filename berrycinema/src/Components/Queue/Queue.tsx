@@ -1,20 +1,19 @@
-import React,{FC, useRef, useState} from 'react';
+import React,{FC, useEffect, useRef, useState} from 'react';
 import ReactPlayer from 'react-player';
 import getYouTubeID from 'get-youtube-id';
 
 import './queue.scss';
 import {BiAddToQueue} from 'react-icons/bi'
 
-import {IVideo} from '../App';
+import {IVideo, socket} from '../App';
 import QueueElement from './QueueElement';
 
 interface QueueProps {
    addVideoHandler(link: string, duration: number, thumbnail: string, title: string, description: string): void;
-   videosQueue: IVideo[];
 }
  
 const Queue: FC<QueueProps> = (props) => {
-    
+    const [videos, setVideos] = useState<IVideo[]>([])
     const [addVideoOpen, setAddVideoOpen] = useState<boolean>(false);
     const [controlVideoOpen, setControlVideoOpen] = useState<boolean>(false);
 
@@ -26,6 +25,15 @@ const Queue: FC<QueueProps> = (props) => {
     const titleInput = useRef<HTMLInputElement>(null);
     const linkInput = useRef<HTMLInputElement>(null);
     const descriptionInput = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        socket.on('current-videos', (currentVideos: IVideo[]) =>{
+            if(currentVideos)
+                setVideos(currentVideos);
+            else
+                setVideos([]);
+        });
+    }, [videos]);
 
     const addVideoHandler = () => {
         const link = linkValue;
@@ -64,15 +72,25 @@ const Queue: FC<QueueProps> = (props) => {
         setTitleValue('');
         setDescriptionValue('');
         openVideoHandler();
-    }
+    };
 
+    const videoServerStatusHandler = (status: boolean) => {
+        if(status)
+            socket.emit('server-video-start');
+        else
+            socket.emit('server-video-stop');
+    };
+    console.log('xD reload queue')
     return ( 
         <div className='queueWrapper'>
             <div className={controlVideoOpen ? 'controlVideo controlVideoActive' : 'controlVideo'}>
                     <input type='range' />
                     <div className='buttons'>
-                        <div className='controlButton'>
-                            play/stop
+                        <div className='controlButton' onClick={() => videoServerStatusHandler(true)}>
+                            play
+                        </div>
+                        <div className='controlButton' onClick={() => videoServerStatusHandler(false)}>
+                            stop
                         </div>
                         <div className='controlButton'>
                             skip
@@ -110,7 +128,7 @@ const Queue: FC<QueueProps> = (props) => {
             </div>
             <div className="line" />
             <div className='queueList'>
-                {props.videosQueue.map(el => (
+                {videos.map(el => (
                     <QueueElement title={el.title} link={el.link} duration={el.duration} thumbnail={el.thumbnail} description={el.description}/>
                 ))}
             </div>
