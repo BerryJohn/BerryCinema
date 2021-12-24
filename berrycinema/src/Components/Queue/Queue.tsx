@@ -87,6 +87,8 @@ const Queue: FC<QueueProps> = (props) => {
          else
              socket.emit('server-video-stop');
     };
+    const videoSkipHandler = () => socket.emit('user-skip-video');
+
     console.log('xD reload queue')
     return ( 
         <div className='queueWrapper'>
@@ -99,7 +101,7 @@ const Queue: FC<QueueProps> = (props) => {
                         <div className='controlButton' onClick={() => videoServerStatusHandler(false)}>
                             stop
                         </div>
-                        <div className='controlButton'>
+                        <div className='controlButton' onClick={() => videoSkipHandler()}>
                             skip
                         </div>
                     </div>

@@ -18,6 +18,9 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
         socket.on('user-change-video', (currentVideo: IVideo) => {
             setVideo(currentVideo);
         });
+        socket.on('end-of-queue', () => {
+            setVideo(undefined);
+        });
     },[video]);
     
     const fcHandle = useFullScreenHandle();

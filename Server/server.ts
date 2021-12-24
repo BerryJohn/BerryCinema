@@ -31,6 +31,8 @@ const videoplayerIntervalHandler = (video: IVideo) => {
             io.emit('user-change-video', videosArr.currentVideo())
             io.emit('current-video-array', videosArr.showVideos())
         }
+        else
+            io.emit('end-of-queue');
         return;
     }
     //else  count time
@@ -113,7 +115,7 @@ io.on('connection', socket => {
     socket.on('get-current-video-data', () => {
         socket.emit('current-video-data', videosArr.currentVideo())
     });
-
+    /// stop&start video to all users
     socket.on('server-video-stop',() => {
         if(videosArr.currentVideo()?.playing)
             videoStopHandler();
@@ -122,7 +124,25 @@ io.on('connection', socket => {
         if(!videosArr.currentVideo()?.playing)
             videoStartHandler();
     });
-
+    //skip current video
+    socket.on('user-skip-video',() => {
+        if(videosArr.countVideos() === 1)
+        {
+            videosArr.shiftVideo();
+            socket.emit('current-video-array', videosArr.showVideos());
+            io.emit('user-change-video', videosArr.currentVideo());
+            io.emit('end-of-queue');
+            stopVideoInterval();
+        }
+        else if(videosArr.countVideos() > 1)
+        {    
+            videosArr.shiftVideo();
+            socket.emit('current-video-array', videosArr.showVideos());
+            io.emit('user-change-video', videosArr.currentVideo());
+            stopVideoInterval();
+            videoStartHandler();
+        }
+    });
     // console.log(Object.keys(io.engine.clients))
 });
 

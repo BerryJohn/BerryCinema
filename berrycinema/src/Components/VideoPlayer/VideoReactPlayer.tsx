@@ -27,6 +27,12 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
         setVideoPlayStatus(!videoPlayStatus);
     };
 
+    const serverVideoPlayStatusHandler = (status: boolean) => {
+        if(status === true)
+            synchroVideoSeek();
+        setVideoPlayStatus(status);
+    };
+
     const onProgressHandler = (e:any) => {
         setVideoCurrentPlayed(e.played)
         setVideoCurrentLoaded(e.loaded)
@@ -51,13 +57,18 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
             console.log('xD')
         });
         socket.on('server-video-stop',() => {
-            if(videoPlayStatus)
-                userVideoPlayStatusHandler();    
+            // if(videoPlayStatus)
+                serverVideoPlayStatusHandler(false);
         });
     
         socket.on('server-video-start',() => {
             if(!videoPlayStatus)
-                userVideoPlayStatusHandler();
+                serverVideoPlayStatusHandler(true);
+        });
+        socket.on('end-of-queue', () => {
+            setVideoCurrentLoaded(0);
+            setVideoCurrentPlayed(0);
+            setVideoCurrentPlayedSeconds(0);
         });
     },[])
 
