@@ -15,11 +15,10 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
     const [video, setVideo] = useState<IVideo>();
 
     useEffect(() => {
-        socket.emit('play-video');
-        socket.on('play-video-data', (currentVideo: IVideo) =>{
+        socket.on('user-change-video', (currentVideo: IVideo) => {
             setVideo(currentVideo);
-        })
-    },[]);
+        });
+    },[video]);
     
     const fcHandle = useFullScreenHandle();
 

@@ -1,6 +1,7 @@
 import React,{FC, useEffect, useRef, useState} from 'react';
 import ReactPlayer from 'react-player';
 import getYouTubeID from 'get-youtube-id';
+// import getYoutubeTitle from 'get-youtube-title';
 
 import './queue.scss';
 import {BiAddToQueue} from 'react-icons/bi'
@@ -8,9 +9,7 @@ import {BiAddToQueue} from 'react-icons/bi'
 import {IVideo, socket} from '../App';
 import QueueElement from './QueueElement';
 
-interface QueueProps {
-   addVideoHandler(link: string, duration: number, thumbnail: string, title: string, description: string): void;
-}
+interface QueueProps {}
  
 const Queue: FC<QueueProps> = (props) => {
     const [videos, setVideos] = useState<IVideo[]>([])
@@ -27,11 +26,8 @@ const Queue: FC<QueueProps> = (props) => {
     const descriptionInput = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        socket.on('current-videos', (currentVideos: IVideo[]) =>{
-            if(currentVideos)
-                setVideos(currentVideos);
-            else
-                setVideos([]);
+        socket.on('current-video-array', (videosQueue: IVideo[]) => {
+            setVideos(videosQueue);
         });
     }, [videos]);
 
@@ -45,13 +41,24 @@ const Queue: FC<QueueProps> = (props) => {
                 thumbnail = `https://img.youtube.com/vi/${ytid}/0.jpg`;
             else
                 thumbnail = 'https://planasa.com/wp-content/uploads/2017/04/frambuesas-adelita.jpg';
-
-            const title: string = titleValue.slice(0,40);
+                
+            let title: string;
+            // if(titleValue === '' && ytid !== null)
+                // title = getYoutubeTitle(ytid).slice(0,50);
+            // else
+            title = titleValue.slice(0,50);
 
             let description: string = '';
             if(descriptionValue.length !== 0)
                 description = descriptionValue.trim().slice(0,500);
-            props.addVideoHandler(link, smallPlayer.current!.getDuration() || -1, thumbnail, title, description)
+            const newVideo: IVideo = {
+                link,
+                thumbnail,
+                title,
+                description,
+                duration: smallPlayer.current!.getDuration(),
+            };
+            socket.emit('user-add-video', newVideo);
         }
     }
 
@@ -76,9 +83,9 @@ const Queue: FC<QueueProps> = (props) => {
 
     const videoServerStatusHandler = (status: boolean) => {
         if(status)
-            socket.emit('server-video-start');
-        else
-            socket.emit('server-video-stop');
+             socket.emit('server-video-start'); 
+         else
+             socket.emit('server-video-stop');
     };
     console.log('xD reload queue')
     return ( 
@@ -129,7 +136,12 @@ const Queue: FC<QueueProps> = (props) => {
             <div className="line" />
             <div className='queueList'>
                 {videos.map(el => (
-                    <QueueElement title={el.title} link={el.link} duration={el.duration} thumbnail={el.thumbnail} description={el.description}/>
+                    <QueueElement 
+                        title={el.title} 
+                        link={el.link} 
+                        duration={el.duration} 
+                        thumbnail={el.thumbnail} 
+                        description={el.description || ''}/>
                 ))}
             </div>
         </div>

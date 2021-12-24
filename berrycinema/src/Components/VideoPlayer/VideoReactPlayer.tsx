@@ -1,4 +1,4 @@
-import React, {FC, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import ReactPlayer from 'react-player';
 import { IVideo, socket } from '../App';
 import VideoControls from './VideoControls';
@@ -38,25 +38,28 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
     };
 
 
-    //sockets
-    // socket.on('server-video-stop',() => {
-    //     if(videoPlayStatus)
-    //         videoPlayStatusHandler(false);    
-    // });
-
-    // socket.on('server-video-start',() => {
-    //     if(!videoPlayStatus)
-    //         videoPlayStatusHandler(true);
-    // });
+    // sockets
 
     const synchroVideoSeek = () => {
         socket.emit('get-current-video-data');
     }
 
-    socket.on('current-video-data', (video: IVideo) => {
-        const newTime: number = video?.currentTime || 0; 
-        bigPlayer.current?.seekTo(newTime);
-    });
+    useEffect(() => {
+        socket.on('current-video-data', (video: IVideo) => {
+            const newTime: number = video?.currentTime || 0; 
+            bigPlayer.current?.seekTo(newTime);
+            console.log('xD')
+        });
+        socket.on('server-video-stop',() => {
+            if(videoPlayStatus)
+                userVideoPlayStatusHandler();    
+        });
+    
+        socket.on('server-video-start',() => {
+            if(!videoPlayStatus)
+                userVideoPlayStatusHandler();
+        });
+    },[])
 
     // console.log('xD reload react plejer');
 
