@@ -18,7 +18,7 @@ export interface IVideo{
     playing?: boolean;
 }
 
-export const socket = io('http://localhost:3001');
+export const socket = io('https://kinoharnas.bieda.it');
 
 const App:FC = () => {
 
