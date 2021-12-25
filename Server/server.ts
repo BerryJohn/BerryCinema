@@ -1,12 +1,12 @@
 import {Server} from 'socket.io';
 import { IVideo, videos } from './videos';
 
-
+console.log('run')
 
 //Server init
 const io = new Server(3001,{
     cors:{
-        origin: ['http://localhost:3000','http://192.168.2.217:3000'],
+        origin: ['http://localhost:3000','http://192.168.2.217:3000','file:///C:/Users/janpa/Desktop/BerryCinema/berrycinema/build/index.html'],
     }
 });
 //classes

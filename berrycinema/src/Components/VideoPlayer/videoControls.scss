@@ -17,6 +17,7 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
     border-radius: 4px;
     transition: .2s;
     margin-right:5px;
+    cursor: pointer;
     &:hover{
         background-color: $base-gray;
     }
@@ -50,11 +51,14 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
         width:0px;
         border-radius:2px;
         transition: .1s;
+        transition-timing-function:linear;
+
         .currentTimeBar{
             height:3px;
             background: $base-color;
             border-radius:2px;
             transition: 1s;
+            transition-timing-function:linear;
         }
     }
 }
@@ -78,8 +82,6 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
     color:rgb(255, 255, 255);
     padding:0px 10px;
     opacity: 1;
-    // background-color: rgba(255, 255, 255, 0.329);
-
     .timers{
         @include flex-center-column();
         height:40px;
@@ -118,9 +120,13 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
         .loadedTimeBar{
             height:5px;
             background-color: $base-gray;
+            transition-timing-function:linear;
+            transition: .3s;
             .currentTimeBar{
                 height:5px;
                 background-color: $base-color;
+                transition-timing-function:linear;
+                transition: .5s;
             }
         }
     }
