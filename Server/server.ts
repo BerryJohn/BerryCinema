@@ -129,7 +129,7 @@ io.on('connection', socket => {
         if(videosArr.countVideos() === 1)
         {
             videosArr.shiftVideo();
-            socket.emit('current-video-array', videosArr.showVideos());
+            io.emit('current-video-array', videosArr.showVideos());
             io.emit('user-change-video', videosArr.currentVideo());
             io.emit('end-of-queue');
             stopVideoInterval();

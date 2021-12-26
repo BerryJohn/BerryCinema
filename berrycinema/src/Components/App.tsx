@@ -18,7 +18,7 @@ export interface IVideo{
     playing?: boolean;
 }
 
-export const socket = io('https://kinoharnas.bieda.it');
+export const socket = io('http://maluch.mikr.us:30354');
 
 const App:FC = () => {
 
