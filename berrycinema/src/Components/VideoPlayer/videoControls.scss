@@ -2,6 +2,16 @@ $base-color:rgba(175, 17, 109, 0.767);
 $base-gray: rgba(212, 212, 212, 0.616);
 $base-gray-lighter: rgba(212, 212, 212, 0.76);
 
+@mixin non-selectable {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
 @mixin flex-center-column {
     display:flex;
     align-items: center;
@@ -36,6 +46,10 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
     transition:.3s;
 }
 
+.cursorHidden{
+    cursor: none;
+}
+
 .controlsPaused{
     background-color: rgba(0, 0, 0, 0.212);
 }
@@ -45,6 +59,7 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
     height:2px;
     position:absolute;
     bottom:0px;
+    transition:.3s;
     .loadedTimeBar{
         height:3px;
         background: rgba(212, 212, 212, 0.616);
@@ -84,6 +99,7 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
     opacity: 1;
     .timers{
         @include flex-center-column();
+        @include non-selectable();
         height:40px;
         cursor: default;
         margin-right:5px;
@@ -104,7 +120,7 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
         width:100px;
         background-color: $base-gray;
         position:absolute;
-        transform: rotate(-90deg) translateX(-70px);
+        transform: rotate(-90deg) translateX(70px);
         opacity:0;
         transition:.3s;
         input[type=range]{
@@ -117,13 +133,14 @@ $base-gray-lighter: rgba(212, 212, 212, 0.76);
         width:100%;
         margin-right:5px;
         border-radius:2px;
+        overflow:hidden;
         .loadedTimeBar{
-            height:5px;
+            height:10px;
             background-color: $base-gray;
             transition-timing-function:linear;
             transition: .3s;
             .currentTimeBar{
-                height:5px;
+                height:10px;
                 background-color: $base-color;
                 transition-timing-function:linear;
                 transition: .5s;

@@ -1,16 +1,15 @@
-import React, {FC, useEffect, useRef, useState} from 'react';
-import ReactPlayer from 'react-player';
+import React, {FC, useEffect, useState} from 'react';
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import { IVideo, socket } from '../App';
-import './videoPlayer.scss';
+import './VideoPlayer.scss';
 import VideoReactPlayer from './VideoReactPlayer';
 
-interface VideoPlayerProps {
-    currentVideo?: IVideo;
+interface IVideoPlayerProps {
+
 }
  
-const VideoPlayer: FC<VideoPlayerProps> = (props) => {
+const VideoPlayer: FC<IVideoPlayerProps> = (props) => {
 
     const [video, setVideo] = useState<IVideo>();
 
@@ -24,8 +23,6 @@ const VideoPlayer: FC<VideoPlayerProps> = (props) => {
     },[video]);
     
     const fcHandle = useFullScreenHandle();
-
-    console.log('xD reload videoplayer')
 
     return (
         <div className='videoContainer'>

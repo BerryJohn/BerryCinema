@@ -6,6 +6,8 @@ import VideoPlayer from './VideoPlayer/VideoPlayer';
 import './app.scss';
 import Queue from './Queue/Queue';
  
+import { serverConfig } from '../serverConfig/config';
+
 export interface IVideo{
     link: string;
     thumbnail: string;
@@ -18,17 +20,14 @@ export interface IVideo{
     playing?: boolean;
 }
 
-export const socket = io('http://maluch.mikr.us:30354');
+export const socket = io(serverConfig.address);
 
 const App:FC = () => {
 
-    console.log('app relog')
     return (
         <div className="main">
             <VideoPlayer />
-            <Queue 
-                // addVideoHandler={addVideoHandler}
-            />
+            <Queue />
         </div>
     );
 }

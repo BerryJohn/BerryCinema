@@ -1,6 +1,6 @@
 import React, {FC, useRef, useState} from 'react';
 
-import './videoControls.scss';
+import './VideoControls.scss';
 
 import {IoPlayOutline, IoVolumeOffOutline, IoExpandOutline, IoPauseOutline, IoVolumeMuteOutline, IoVolumeHighOutline, IoVolumeMediumOutline, IoVolumeLowOutline} from 'react-icons/io5';
 
@@ -44,11 +44,15 @@ const VideoControls: FC<IVideoControls> = (props) => {
 
     const videoStatusHandler = () => props.videoStatusHandler();
 
-    // console.log('Relog controls');
-
     return (
         <div 
-            className={props.videoPlay ? 'controlsWrapper' : 'controlsWrapper controlsPaused'}
+            className={
+                props.videoPlay  && hidden
+                ? 'controlsWrapper cursorHidden' 
+                : props.videoPlay 
+                ? 'controlsWrapper'
+                : 'controlsWrapper controlsPaused'
+            }
             onMouseMove={() => {onMouseMoveHandler()}}
             onMouseLeave={() => {onMouseMoveLeaveHandler()}}
             onClick={(e) => {onMouseClickHandler(e)}}

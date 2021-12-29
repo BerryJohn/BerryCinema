@@ -3,8 +3,8 @@ import ReactPlayer from 'react-player';
 import getYouTubeID from 'get-youtube-id';
 // import getYoutubeTitle from 'get-youtube-title';
 
-import './queue.scss';
-import {BiAddToQueue} from 'react-icons/bi'
+import './Queue.scss';
+import {IoAddCircleOutline, IoPerson, IoTimerOutline} from 'react-icons/io5';
 
 import {IVideo, socket} from '../App';
 import QueueElement from './QueueElement';
@@ -15,10 +15,11 @@ const Queue: FC<QueueProps> = (props) => {
     const [videos, setVideos] = useState<IVideo[]>([])
     const [addVideoOpen, setAddVideoOpen] = useState<boolean>(false);
     const [controlVideoOpen, setControlVideoOpen] = useState<boolean>(false);
-
+    
     const [linkValue, setLinkValue] = useState<string>('');
     const [titleValue, setTitleValue] = useState<string>('');
     const [descriptionValue, setDescriptionValue] = useState<string>('');
+    const [currentUsers, setCurrentUsers] = useState<number>(0);
 
     const smallPlayer = useRef<ReactPlayer>(null);
     const titleInput = useRef<HTMLInputElement>(null);
@@ -29,6 +30,9 @@ const Queue: FC<QueueProps> = (props) => {
         socket.on('current-video-array', (videosQueue: IVideo[]) => {
             setVideos(videosQueue);
         });
+        socket.on('current-users-count', (users)=>{
+            setCurrentUsers(users);
+        })
     }, [videos]);
 
     const addVideoHandler = () => {
@@ -87,9 +91,15 @@ const Queue: FC<QueueProps> = (props) => {
          else
              socket.emit('server-video-stop');
     };
+
     const videoSkipHandler = () => socket.emit('user-skip-video');
 
-    console.log('xD reload queue')
+    const countQueueTime = () => {
+        let time:number = 0;
+        videos.forEach(el => time += el.duration);
+        return time;
+    }
+
     return ( 
         <div className='queueWrapper'>
             <div className={controlVideoOpen ? 'controlVideo controlVideoActive' : 'controlVideo'}>
@@ -125,20 +135,28 @@ const Queue: FC<QueueProps> = (props) => {
                 <ReactPlayer style={{display:'none'}} url={linkValue} height={`300px`} ref={smallPlayer} />
             </div>
             <div className='queueStats'>
-                <h1>Playlista</h1>
+                <div className='videoStats'>
+                    <h1>Playlist</h1>
+                    <span><IoPerson/>{currentUsers}</span>
+                    <span><IoTimerOutline />
+                    {new Date(countQueueTime() * 1000).toISOString().substr(11, 8)}
+                    </span>
+                </div>
                 <div className='buttons'>
                     <div className='controlVideoButton' onClick={() => openControlVideoHandler()}>
                         Controls
                     </div>
                     <div className='addVideo' onClick={() => openVideoHandler()}>
-                        Add Video <BiAddToQueue className='addIcon'/>
+                        Add Video <IoAddCircleOutline className='addIcon'/>
                     </div>
                 </div>
             </div>
             <div className="line" />
             <div className='queueList'>
-                {videos.map(el => (
-                    <QueueElement 
+                {videos.map((el, id) => (
+                    <QueueElement
+                        key={`video${el.title}${el.link}`}
+                        id={id}
                         title={el.title} 
                         link={el.link} 
                         duration={el.duration} 

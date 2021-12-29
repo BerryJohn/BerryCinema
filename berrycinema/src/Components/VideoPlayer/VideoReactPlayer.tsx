@@ -3,8 +3,6 @@ import ReactPlayer from 'react-player';
 import { IVideo, socket } from '../App';
 import VideoControls from './VideoControls';
 
-import './videoPlayer.scss';
-
 interface IVideoReactPlayer {
     currentVideo?: IVideo;
     fullscreenHandler: any;
@@ -43,19 +41,21 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
         setVideoVolume(volume/100);
     };
 
+    const onReadyHandler = () => {
+        socket.emit('get-current-video-data');
+    }
 
     // sockets
-
     const synchroVideoSeek = () => {
         socket.emit('get-current-video-data');
     }
 
     useEffect(() => {
         socket.on('current-video-data', (video: IVideo) => {
-            const newTime: number = video?.currentTime || 0; 
+            const newTime: number = video?.currentTime || 0;
             bigPlayer.current?.seekTo(newTime);
-            console.log('xD')
         });
+
         socket.on('server-video-stop',() => {
             // if(videoPlayStatus)
                 serverVideoPlayStatusHandler(false);
@@ -65,6 +65,7 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
             if(!videoPlayStatus)
                 serverVideoPlayStatusHandler(true);
         });
+
         socket.on('end-of-queue', () => {
             setVideoCurrentLoaded(0);
             setVideoCurrentPlayed(0);
@@ -72,10 +73,8 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
         });
     },[])
 
-    // console.log('xD reload react plejer');
-
     return (
-        <div className='videoContainer'>
+        <div>
                 <ReactPlayer
                     className='reactVideo'
                     width='100%'
@@ -85,7 +84,8 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
                     playing={videoPlayStatus}
                     ref={bigPlayer}
                     url={props.currentVideo?.link}
-                    onProgress={(e) => {onProgressHandler(e)}}
+                    onProgress={(e) => onProgressHandler(e)}
+                    onReady={() => onReadyHandler()}
                 />
                 <VideoControls 
                     loaded={videoCurrentLoaded}

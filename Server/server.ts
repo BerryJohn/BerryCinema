@@ -1,12 +1,11 @@
 import {Server} from 'socket.io';
 import { IVideo, videos } from './videos';
 
-console.log('run')
-
 //Server init
 const io = new Server(3001,{
     cors:{
-        origin: ['http://localhost:3000','http://192.168.2.217:3000','file:///C:/Users/janpa/Desktop/BerryCinema/berrycinema/build/index.html'],
+        origin: ['http://localhost:3000'],
+        //origin: ['https://kinoharnas.bieda.it','http://kinoharnas.bieda.it','http://kinoharnas.bieda.it:8080'],
     }
 });
 //classes
@@ -87,19 +86,29 @@ const videoStartHandler = () => {
 }
 
 //sockets
+
+//veriables
+let connectedUsers: number = 0;
+
 //user connection
 io.on('connection', socket => {
     //When user is connecting, share current queue to him
     socket.emit('current-video-array', videosArr.showVideos());
     if(videosArr.countVideos() > 0)
         io.emit('user-change-video', videosArr.currentVideo())
-    ////
-
+    ////emit counted current connected users
+    connectedUsers += 1;
+    io.emit('current-users-count', connectedUsers)
+    socket.on('disconnect', () => {
+        connectedUsers -= 1;
+        io.emit('current-users-count', connectedUsers)
+    });
+    ////////////////////////////////////////////
     socket.on('user-add-video', (video: IVideo) => {
         if(video.duration > 0)
-            {
-                video.currentTime = 0;
-                video.playing = true;
+        {
+            video.currentTime = 0;
+            video.playing = true;
                 videosArr.addVideo(video);
                 if(videosArr.countVideos() <= 1)
                 {   
@@ -137,7 +146,7 @@ io.on('connection', socket => {
         else if(videosArr.countVideos() > 1)
         {    
             videosArr.shiftVideo();
-            socket.emit('current-video-array', videosArr.showVideos());
+            io.emit('current-video-array', videosArr.showVideos());
             io.emit('user-change-video', videosArr.currentVideo());
             stopVideoInterval();
             videoStartHandler();
