@@ -16,13 +16,13 @@ const QueueElement: FC<IQueueElementProps> = (props) => {
 
     return ( 
         <div className={props.id === 0 ? 'elementWrapper elementWrapperFirst' : 'elementWrapper'}>
-            <a href={props.link} target={'_blank'}>
+            <a href={props.link} target={'_blank'} rel="noreferrer">
                 <div className="image">
                     <img src={props.thumbnail} alt='Video thumbnail'/>
                 </div>
             </a>
             <div className="elementInfo">
-                <a href={props.link} target={'_blank'}>
+                <a href={props.link} target={'_blank'} rel="noreferrer">
                     <div className="title">{props.title}</div>
                 </a>
                 <div className="description">{props.description}</div>

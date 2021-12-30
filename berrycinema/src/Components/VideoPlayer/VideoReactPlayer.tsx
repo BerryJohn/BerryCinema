@@ -7,6 +7,8 @@ interface IVideoReactPlayer {
     currentVideo?: IVideo;
     fullscreenHandler: any;
 }
+
+let wasReady: boolean = false;
  
 const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
     //refs
@@ -42,7 +44,11 @@ const VideoReactPlayer: FC<IVideoReactPlayer> = (props) => {
     };
 
     const onReadyHandler = () => {
-        socket.emit('get-current-video-data');
+        if(!wasReady)//Player had problem with this
+        {
+            socket.emit('get-current-video-data');
+            wasReady = true;
+        }
     }
 
     // sockets

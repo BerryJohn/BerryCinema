@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import React, {FC} from 'react';
 
 import VideoPlayer from './VideoPlayer/VideoPlayer';
-import './app.scss';
+import './App.scss';
 import Queue from './Queue/Queue';
  
 import { serverConfig } from '../serverConfig/config';
