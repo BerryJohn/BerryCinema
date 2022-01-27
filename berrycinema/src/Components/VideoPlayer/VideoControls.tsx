@@ -1,8 +1,13 @@
 import React, {FC, useRef, useState} from 'react';
-
 import './VideoControls.scss';
-
-import {IoPlayOutline, IoVolumeOffOutline, IoExpandOutline, IoPauseOutline, IoVolumeMuteOutline, IoVolumeHighOutline, IoVolumeMediumOutline, IoVolumeLowOutline} from 'react-icons/io5';
+import {IoPlayOutline, 
+        IoVolumeOffOutline, 
+        IoExpandOutline,
+        IoPauseOutline, 
+        IoVolumeMuteOutline, 
+        IoVolumeHighOutline, 
+        IoVolumeMediumOutline, 
+        IoVolumeLowOutline} from 'react-icons/io5';
 
 interface IVideoControls {
     loaded: number;

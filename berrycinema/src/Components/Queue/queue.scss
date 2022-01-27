@@ -11,6 +11,7 @@ $base-color:rgba(175, 17, 109, 0.767);
 }
 
 .queueWrapper{
+    padding:1px solid red;
     padding: 25px 20px;
     color:rgb(226, 226, 226);
     font-weight:300;
@@ -34,42 +35,6 @@ $base-color:rgba(175, 17, 109, 0.767);
         flex-direction: column;
         align-items: center;
         overflow: hidden;
-        .addControls{
-            display:flex;
-            min-width:100%;
-            max-width:100%;
-            justify-content:  space-evenly;
-            align-items: center;
-            flex-wrap:wrap;
-            div{
-                p{
-                    margin:8px 5px;
-                }
-                input[type='text']{
-                    all: unset;
-                    width:300px;
-                    height:15px;
-                    padding:5px 10px;
-                    border-radius: 3px;
-                    height:25px;
-                    background-color: rgb(26, 26, 26);
-                }
-            }
-        }
-        button{
-            all:unset;
-            width:35px;
-            font-size:20px;
-            margin:10px 5px;
-            padding:5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            background: rgba(212, 212, 212, 0.274);
-            transition: .4s;
-            &:hover{
-                background: rgba(212, 212, 212, 0.616);
-            }
-        }
     }
     .addVideoFormActive{
         max-height:300px;
@@ -127,9 +92,9 @@ $base-color:rgba(175, 17, 109, 0.767);
 }
 
 .queueStats{
-    // border:1px solid red;
     display:flex;
     justify-content: space-between;
+    flex-wrap:wrap;
     .buttons{
         display:flex;
         user-select: none;
@@ -179,7 +144,6 @@ $base-color:rgba(175, 17, 109, 0.767);
     }
     .videoStats{
         display:flex;
-        // justify-content: center;
         align-items: center;
         h1{
             padding:0px;
@@ -199,6 +163,7 @@ $base-color:rgba(175, 17, 109, 0.767);
     }
 }
 
+//QueueElements 
 .elementWrapper{
     box-sizing: border-box;
     min-height:120px;
