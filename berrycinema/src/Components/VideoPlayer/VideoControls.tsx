@@ -8,6 +8,7 @@ import {IoPlayOutline,
         IoVolumeHighOutline, 
         IoVolumeMediumOutline, 
         IoVolumeLowOutline} from 'react-icons/io5';
+import { off } from 'process';
 
 interface IVideoControls {
     loaded: number;
@@ -29,6 +30,7 @@ const VideoControls: FC<IVideoControls> = (props) => {
     const smallTimeBarRef = useRef<HTMLDivElement>(null);
     const bigTimeBarRef = useRef<HTMLDivElement>(null);
     const controlsRef = useRef<HTMLDivElement>(null);
+    const volumeButtonRef = useRef<HTMLDivElement>(null);
     //states
     const [hidden, setHidden] = useState<boolean>(true);
     //handlers
@@ -49,6 +51,28 @@ const VideoControls: FC<IVideoControls> = (props) => {
 
     const videoStatusHandler = () => props.videoStatusHandler();
 
+    const volumeSliderHandler = (e: any) => {
+        localStorage.setItem('videoVolume', `${e.target.value}`);
+        props.inputValueHandler(parseInt(e.target.value) - 1);
+    }
+    const volumeButtonHandler = (e:any, value: number) => {
+        if(e.target.className !== 'slider' && e.target.className !== 'volumeSlider')
+            {
+                if(props.currentVolume <= 0)
+                    {
+                        if(localStorage.getItem('videoVolume') === null)
+                            localStorage.setItem('videoVolume', `50`);
+                        const oldVolume = localStorage.getItem('videoVolume');
+                        if(oldVolume !== null)
+                        {
+                            const initialValue = JSON.parse(oldVolume);
+                            props.inputValueHandler(initialValue);
+                            return;
+                        }
+                    }
+                props.inputValueHandler(value);
+            }
+    };
     return (
         <div 
             className={
@@ -99,14 +123,26 @@ const VideoControls: FC<IVideoControls> = (props) => {
                         {new Date(props?.videoDuration * 1000).toISOString().substr(11, 8)}
                     </span>
                 </div>
-                <div className="volume">
-                    { props.currentVolume === 0 ? <IoVolumeMuteOutline /> : 
+                <div 
+                    className="volume"
+                    ref={volumeButtonRef}
+                    onClick={(e) => volumeButtonHandler(e, 0)}
+                >   
+                    { props.currentVolume <= 0 ? <IoVolumeMuteOutline /> : 
                                 props.currentVolume > 0.75 ? <IoVolumeHighOutline/> : 
                                 props.currentVolume > 0.50 ? <IoVolumeMediumOutline/> : 
                                 props.currentVolume > 0.25 ? <IoVolumeLowOutline/> :
                                 <IoVolumeOffOutline />  }
                     <div className='volumeSlider'>
-                        <input type='range' min='0' max='100' onChange={(e) => props.inputValueHandler(parseInt(e.target.value))}/>
+                        <input 
+                            className='slider'
+                            type='range'
+                            min='-1'
+                            max='100'
+                            value={props.currentVolume * 100}
+                            onChange={volumeSliderHandler}
+                            style={{backgroundImage: `linear-gradient(90deg, rgba(175, 17, 109, 1) ${props.currentVolume * 100}%, rgba(212, 212, 212, 0.616) ${props.currentVolume * 100}%)`}}
+                        />
                     </div>
                 </div>
                 <div className='fullscreen' onClick={!props.fullscreenHandler.active ? props.fullscreenHandler.enter : props.fullscreenHandler.exit}>
