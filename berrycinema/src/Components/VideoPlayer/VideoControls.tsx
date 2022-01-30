@@ -7,8 +7,9 @@ import {IoPlayOutline,
         IoVolumeMuteOutline, 
         IoVolumeHighOutline, 
         IoVolumeMediumOutline, 
-        IoVolumeLowOutline} from 'react-icons/io5';
-import { off } from 'process';
+        IoVolumeLowOutline,
+        IoContractOutline
+        } from 'react-icons/io5';
 
 interface IVideoControls {
     loaded: number;
@@ -53,9 +54,9 @@ const VideoControls: FC<IVideoControls> = (props) => {
 
     const volumeSliderHandler = (e: any) => {
         localStorage.setItem('videoVolume', `${e.target.value}`);
-        props.inputValueHandler(parseInt(e.target.value) - 1);
+        props.inputValueHandler(parseInt(e.target.value));
     }
-    const volumeButtonHandler = (e:any, value: number) => {
+    const volumeVolumeButtonHandler = (e:any, value: number) => {
         if(e.target.className !== 'slider' && e.target.className !== 'volumeSlider')
             {
                 if(props.currentVolume <= 0)
@@ -126,7 +127,7 @@ const VideoControls: FC<IVideoControls> = (props) => {
                 <div 
                     className="volume"
                     ref={volumeButtonRef}
-                    onClick={(e) => volumeButtonHandler(e, 0)}
+                    onClick={(e) => volumeVolumeButtonHandler(e, 0)}
                 >   
                     { props.currentVolume <= 0 ? <IoVolumeMuteOutline /> : 
                                 props.currentVolume > 0.75 ? <IoVolumeHighOutline/> : 
@@ -137,7 +138,7 @@ const VideoControls: FC<IVideoControls> = (props) => {
                         <input 
                             className='slider'
                             type='range'
-                            min='-1'
+                            min='0'
                             max='100'
                             value={props.currentVolume * 100}
                             onChange={volumeSliderHandler}
@@ -146,7 +147,10 @@ const VideoControls: FC<IVideoControls> = (props) => {
                     </div>
                 </div>
                 <div className='fullscreen' onClick={!props.fullscreenHandler.active ? props.fullscreenHandler.enter : props.fullscreenHandler.exit}>
-                    <IoExpandOutline />
+                    {props.fullscreenHandler.active 
+                    ? <IoContractOutline /> 
+                    : <IoExpandOutline /> 
+                    }
                 </div>
             </div>
             {/* END OF BIG BAR */}
